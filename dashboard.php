@@ -1,12 +1,11 @@
 <?php
 session_start();
 if (!isset($_SESSION['login'])) { header("Location: login.php"); exit; }
-include 'koneksaun.php'; // Asegura katak iha ne'e $db mak uza nu'udar koneksaun PDO
+include 'koneksaun.php'; 
 
 $filter_sql = "";
 if (isset($_GET['filter_date']) && !empty($_GET['filter_date'])) {
     $date = $_GET['filter_date'];
-    // Nota: Iha PostgreSQL, uza ILIKE ka LIKE ba date format
     $filter_sql = " WHERE data_dokumento::text LIKE '$date%'";
 }
 ?>
@@ -70,9 +69,11 @@ if (isset($_GET['filter_date']) && !empty($_GET['filter_date'])) {
     <table>
         <tr><th>NARAN DOKUMENTO</th><th>DATA</th><th>OBSERVASAUN</th><th>FILE</th><th>AKSAUN</th></tr>
         <?php
+        // KÓDIGU PDO NE'E HODI REZOLVE ERROR QUERY
         $query = "SELECT * FROM tb_aneksos $filter_sql ORDER BY data_dokumento DESC";
         $stmt = $db->prepare($query);
         $stmt->execute();
+        
         while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             echo "<tr>
                     <td>{$row['naran_dokumento']}</td>
